@@ -1,0 +1,59 @@
+#Respuesta ejercicios Ana Cruz 
+#Para seleccionar el working directory 
+setwd("C:/Users/Alumno 25-B/Desktop")
+#Para leer la base de datos, fijate que est este en el desktop
+base=read.csv("genes2.csv")
+#Para leer las primeras 6 filas
+head(base)
+#Para conocer la estructura de la base de datos
+str(base)
+#Ahora precisamos cambiar de caracteres a factores, esto para poder hacer el analisis estadistico, unicamente las columnas de caracteres
+library(dplyr)
+base<-base%>%
+  mutate(across(where(is.character), as.factor))
+#El codigo de arriba no funciono pq no tenemos dplyr bien instalado asi quelo instalamos bien y probemos con otro 
+base <- base |>
+  dplyr::mutate(
+    dplyr::across(where(is.character), as.factor)
+  )
+#Ahora para comprobar el cambio 
+str(base)
+#Ya que tenemos comprobado que si funciono, para el reto 1 tenemos que agrupar para poder contestar el reto 1 
+base %>%
+  group_by(Tratamiento) %>%
+  summarise(Promedio_Expresion = mean(Expresion_TPM, na.rm = TRUE)) %>%
+  arrange(desc(Promedio_Expresion))
+#Notita, el comando na.rm =True, nos ayuda a remover todos aquellos datos NA para que no hagan ruido despues en el analysis
+#Para el reto 2, vamos a flitrar tal que 
+base %>%
+  filter(Tejido == "Higado",
+         Estres == "Alto",
+         Tiempo == "48h") %>%
+  arrange(desc(Expresion_TPM))
+#El comando arrange desc, es lo que nos ordena de mayor a menor en base a a expresion 
+#El reto 3 indica que cuáles son los 10 genes más expresados en condiciones crispr, por lo que primero 
+#Vamos a unicamente filtrar datos de tx crispr, y creamos este objeto
+datos_crispr <- base %>%
+  filter(Tratamiento == "CRISPR")
+#Quiero ver estos filtrados 
+View(datos_crispr)
+datos_crispr
+#Ahora, vamos a agrupar y calcular el promedio de  expresion por gen tal que 
+promedio_por_gen <- datos_crispr %>%
+  group_by(Gene) %>%
+  summarise(Promedio_Expresion = mean(Expresion_TPM, na.rm = TRUE))
+#Quiero ver promedio por gen 
+View(promedio_por_gen)
+promedio_por_gen
+#Ya que los tenemos asi, precisamos ordenarlos de mayor a menor expresion 
+gen_ordenados <- promedio_por_gen %>%
+  arrange(desc(Promedio_Expresion))
+#Veo ahora estos ordenados
+View(gen_ordenados)
+gen_ordenados
+#De estos ordenados, vamos a seleccionar los primeros 10, el comando slice head, nos ayuda a agarrar solo los primeros que quiera seleccionar  
+top10genes <- gen_ordenados %>%
+  slice_head(n = 10)
+#Veo los primeros 10 genes tal que 
+View(top10genes)
+top10genes
