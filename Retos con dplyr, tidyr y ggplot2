@@ -1,4 +1,5 @@
 #Respuesta ejercicios Ana Cruz 
+#Nivel 1
 #Para seleccionar el working directory 
 setwd("C:/Users/Alumno 25-B/Desktop")
 #Para leer la base de datos, fijate que est este en el desktop
@@ -57,3 +58,6 @@ top10genes <- gen_ordenados %>%
 #Veo los primeros 10 genes tal que 
 View(top10genes)
 top10genes
+
+==========================================
+#Nivel 2 
